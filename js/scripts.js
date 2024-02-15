@@ -77,6 +77,54 @@
 
 })(jQuery);
 
+
+// for form validation
+
+function validate() {
+    let flag = false;
+    let mailFormate = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    let name = $(".form-name").val();
+
+    if (name == "" || name == undefined) {
+        $(".form-name-msg").html("name is required").addClass("text-danger");
+        flag = false;
+    } else {
+        $(".form-name-msg").html("ok").removeClass("text-danger").addClass("text-success");
+        flag = true;
+    }
+
+    let email = $(".form-email").val();
+
+    if (email == "" || email == undefined) {
+        $(".form-email-msg").html("email is required").addClass("text-danger");
+        flag = false;
+    } else if (mailFormate.test(email) == false) {
+        $(".form-email-msg").html("email is invalid must be in (fake@email.com)").addClass("text-danger");
+        flag = false;
+    } else {
+        $(".form-email-msg").html("ok").removeClass("text-danger").addClass("text-success");
+        flag = true;
+    }
+
+    let message=$(".form-message").val();
+    
+    if(message==""||message==undefined){
+        $(".form-message-msg").html("message is required").addClass("text-danger");
+        flag = false;
+    }else if(message.length <=10){
+        $(".form-message-msg").html("more than 10 char required").addClass("text-danger");
+        flag = false;
+    }else{
+        $(".form-message-msg").html("ok").removeClass("text-danger").addClass("text-success");
+        flag = true;
+
+    }
+
+    return flag;
+}
+
+
 //for form submission
 
 const scriptURL = 'https://script.google.com/macros/s/AKfycbySga4wKgone5kgV71i7JxJfP4kDO5xf3iG8b7tBypVmSIexzT40kboxFp2GXMms-_R9g/exec'
@@ -84,8 +132,10 @@ const form = document.forms['contact-form']
 
 form.addEventListener('submit', e => {
     e.preventDefault()
+    if (validate()) {
     fetch(scriptURL, { method: 'POST', body: new FormData(form) })
         .then(response => alert("Thank you! your form is submitted successfully."))
         .then(() => { window.location.reload(); })
         .catch(error => console.error('Error!', error.message))
+    }
 })
